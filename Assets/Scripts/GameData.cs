@@ -1,17 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
+using BreakInfinity;
 
 public class GameData
 {
-    public double sand;
+    public BigDouble uacCredits;
 
-    public double clickUpLevel;
+    public BigDouble shotUpgradeLevel;
 
     public GameData()
     {
-        sand = 0;
+        uacCredits = 0;
 
-        clickUpLevel = 0;
+        shotUpgradeLevel = 0;
     }
 
 }

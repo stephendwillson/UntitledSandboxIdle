@@ -2,45 +2,52 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using BreakInfinity;
 
 public class UpgradeController : MonoBehaviour
 {
-    public GameController controller;
+    public static UpgradeController instance;
+    private void Awake() => instance = this;
 
-    public Upgrade clickUp;
+    public Upgrade shotUpgrade;
 
-    public string clickUpName;
+    public string shotUpgradeName;
 
-    public double clickUpBaseCost;
-    public double clickUpCostMult;
+    public BigDouble shotUpgradeBaseCost;
+    public BigDouble shotUpgradeCostMult;
 
     public void StartUpgradeController()
     {
+        shotUpgradeName = "Pistol Upgrade";
+        shotUpgradeBaseCost = 10;
+        shotUpgradeCostMult = 1.5;
 
-        clickUpName = "Click Upgrade";
-        clickUpBaseCost = 10;
-        clickUpCostMult = 1.5;
-
-        UpdateClickUpgradeUI();
+        UpdateShotUpgradeUI();
     }
 
-    public void UpdateClickUpgradeUI()
+    public void UpdateShotUpgradeUI()
     {
-        clickUp.LevelText.text = "Level: " + controller.gamedata.clickUpLevel.ToString();
-        clickUp.CostText.text = "Cost: " + Cost() + " Sand";
-        clickUp.NameText.text = clickUpName;
+        var gamedata = GameController.instance.gamedata;
+
+        shotUpgrade.LevelText.text = "Level: " + gamedata.shotUpgradeLevel.ToString();
+        shotUpgrade.CostText.text = "Cost: " + Cost().ToString("F2") + " Credits";
+        shotUpgrade.NameText.text = shotUpgradeName;
     }
 
-    public double Cost() => clickUpBaseCost * Math.Pow(clickUpCostMult, controller.gamedata.clickUpLevel);
+    public BigDouble Cost() => shotUpgradeBaseCost * BigDouble.Pow(shotUpgradeCostMult, GameController.instance.gamedata.shotUpgradeLevel);
 
     public void BuyUpgrade()
     {
-        if (controller.gamedata.sand >= Cost())
+        var gamedata = GameController.instance.gamedata;
+
+        if (gamedata.uacCredits >= Cost())
         {
-            controller.gamedata.sand -= Cost();
-            controller.gamedata.clickUpLevel += 1;
+            gamedata.uacCredits -= Cost();
+            gamedata.shotUpgradeLevel += 1;
         }
 
-        UpdateClickUpgradeUI();
+        UpdateShotUpgradeUI();
     }
+
+
 }
