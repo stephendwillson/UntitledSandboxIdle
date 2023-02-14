@@ -10,7 +10,24 @@ using BreakInfinity;
 public class UpgradesController : MonoBehaviour
 {
     public static UpgradesController instance;
+    
     private void Awake() => instance = this;
+
+    // idle production upgrades
+    public string[] productionUpgradeNames;
+
+    public List<Upgrades> productionUpgrades;
+    public Upgrades productionUpgradePrefab;
+
+    public ScrollRect productionUpgradesScroll;
+    public Transform productionUpgradesPanel;
+
+    public BigDouble[] productionUpgradeBaseCost;
+    public BigDouble[] productionUpgradesBasePower;
+    public BigDouble[] productionUpgradeCostMult;
+
+    // clicky shooty upgrades
+    public string[] clickUpgradeNames;
 
     public List<Upgrades> clickUpgrades;
     public Upgrades clickUpgradePrefab;
@@ -18,20 +35,20 @@ public class UpgradesController : MonoBehaviour
     public ScrollRect clickUpgradesScroll;
     public Transform clickUpgradesPanel;
 
-    public string[] clickUpgradeNames;
-
     public BigDouble[] clickUpgradeBaseCost;
     public BigDouble[] clickUpgradesBasePower;
     public BigDouble[] clickUpgradeCostMult;
 
+   
+
     public void StartUpgradeController()
     {
-        Utils.UpgradeCheck(ref GameController.instance.gamedata.clickUpgradeLevel, 7);
+
+        // pile of click upgrade init + control values
+        Utils.UpgradeCheck(GameController.instance.gamedata.clickUpgradeLevels, 7);
 
         clickUpgradeNames = new[]
         {
-            // Rough idea is to use Fists + Chainsaw for temporary click/idle upgrades
-            // Maybe Berserker pack == stronger fists, something like that
             // "Fists",
             // "Chainsaw",
             "Pistol",
@@ -41,7 +58,6 @@ public class UpgradesController : MonoBehaviour
             "Rocket Launcher",
             "Plasma Gun",
             "BFG9000",
-
         };
 
         clickUpgradeBaseCost = new BigDouble[]
@@ -68,7 +84,7 @@ public class UpgradesController : MonoBehaviour
 
         clickUpgradesBasePower = new BigDouble[]
         {
-            1,
+            10000,
             5,
             10,
             25,
@@ -77,55 +93,153 @@ public class UpgradesController : MonoBehaviour
             250,
         };
 
-        for (int i = 0; i < GameController.instance.gamedata.clickUpgradeLevel.Count; i++)
+        for (int i = 0; i < GameController.instance.gamedata.clickUpgradeLevels.Count; i++)
         {
             Upgrades upgrade = Instantiate(clickUpgradePrefab, clickUpgradesPanel);
             upgrade.UpgradeID = i;
             clickUpgrades.Add(upgrade);
         }
 
+        // slap the upgrades into the scroll rect starting from bottom left, not center
         clickUpgradesScroll.normalizedPosition = new Vector2(0, 0);
 
-        UpdateClickUpgradeUI();
+
+        // bunch of idle production upgrade init + control values
+        Utils.UpgradeCheck(GameController.instance.gamedata.productionUpgradeLevels, 5);
+
+        productionUpgradeNames = new[]
+        {
+            "Production 1",
+            "Production 2",
+            "Production Longer Name 1",
+            "Prod 1",
+            "Production 3",
+        };
+
+        productionUpgradeBaseCost = new BigDouble[]
+        {
+            25,
+            100,
+            1000,
+            10000,
+            50000,
+        };
+
+        productionUpgradeCostMult = new BigDouble[]
+        {
+            1.5,
+            1.75,
+            2,
+            3,
+            5,
+        };
+
+        productionUpgradesBasePower = new BigDouble[]
+        {
+            1,
+            2,
+            10,
+            100,
+            500,
+        };
+
+        for (int i = 0; i < GameController.instance.gamedata.productionUpgradeLevels.Count; i++)
+        {
+            Upgrades upgrade = Instantiate(productionUpgradePrefab, productionUpgradesPanel);
+            upgrade.UpgradeID = i;
+            productionUpgrades.Add(upgrade);
+        }
+
+        // slap the upgrades into the scroll rect starting from bottom left, not center
+        productionUpgradesScroll.normalizedPosition = new Vector2(0, 0);
+
+
+        UpdateUpgradeUI("click");
+        UpdateUpgradeUI("idle");
     }
 
-    public void UpdateClickUpgradeUI(int UpgradeID = -1)
+    public void UpdateUpgradeUI(string type, int UpgradeID = -1)
     {
         var gamedata = GameController.instance.gamedata;
 
-        if (UpgradeID == -1)
-            for (int i = 0; i < clickUpgrades.Count; i++)
-                UpdateUI(i);
-        else
-            UpdateUI(UpgradeID);
-
-        void UpdateUI(int ID)
+        switch (type)
         {
-            clickUpgrades[ID].LevelText.text = gamedata.clickUpgradeLevel[ID].ToString();
-            clickUpgrades[ID].CostText.text = $"-{ClickUpgradeCost(ID)} Credits";
-            clickUpgrades[ID].BasePowerText.text = $"+{clickUpgradesBasePower[ID]} / Shot";
-            clickUpgrades[ID].NameText.text = clickUpgradeNames[ID];
+            case "click":
+                if (UpgradeID == -1)
+                    for (int i = 0; i < clickUpgrades.Count; i++)
+                        UpdateUI(clickUpgrades, gamedata.clickUpgradeLevels, clickUpgradeNames, i);
+                else
+                    UpdateUI(clickUpgrades, gamedata.clickUpgradeLevels, clickUpgradeNames, UpgradeID);
+                break;
+            case "idle":
+                if (UpgradeID == -1)
+                    for (int i = 0; i < productionUpgrades.Count; i++)
+                        UpdateUI(productionUpgrades, gamedata.productionUpgradeLevels, productionUpgradeNames, i);
+                else
+                    UpdateUI(productionUpgrades, gamedata.productionUpgradeLevels, productionUpgradeNames, UpgradeID);
+                break;
+        }
+
+
+
+        void UpdateUI(List<Upgrades> upgrades, List<int> upgradeLevels, string[] upgradeNames, int ID)
+        {
+            upgrades[ID].LevelText.text = upgradeLevels[ID].ToString();
+            upgrades[ID].CostText.text = $"-{UpgradeCost(type, ID)} Credits";
+            upgrades[ID].NameText.text = upgradeNames[ID];
+
+            switch (type)
+            {
+                case "click":
+                    upgrades[ID].BasePowerText.text = $"+{clickUpgradesBasePower[ID]} / Shot";
+                    break;
+                case "idle":
+                    upgrades[ID].BasePowerText.text = $"+{productionUpgradesBasePower[ID]} / Shot";
+                    break;
+            }
         }
     }
 
     // Get cost for specified Upgrade ID
-    public BigDouble ClickUpgradeCost(int UpgradeID)
+    public BigDouble UpgradeCost(string type, int UpgradeID)
     {
         var gamedata = GameController.instance.gamedata;
 
-        return clickUpgradeBaseCost[UpgradeID] * BigDouble.Pow(clickUpgradeCostMult[UpgradeID], gamedata.clickUpgradeLevel[UpgradeID]);
+        switch (type)
+        {
+            case "click":
+                return clickUpgradeBaseCost[UpgradeID] * BigDouble.Pow(clickUpgradeCostMult[UpgradeID], gamedata.clickUpgradeLevels[UpgradeID]);
+
+            case "idle":
+                return productionUpgradeBaseCost[UpgradeID] * BigDouble.Pow(productionUpgradeCostMult[UpgradeID], gamedata.productionUpgradeLevels[UpgradeID]);
+
+        }
+        return -1;
     }
 
-    public void BuyUpgrade(int UpgradeID)
+    public void BuyUpgrade(string type, int UpgradeID)
     {
         var gamedata = GameController.instance.gamedata;
 
-        if (gamedata.uacCredits >= ClickUpgradeCost(UpgradeID))
+        switch (type)
         {
-            gamedata.uacCredits -= ClickUpgradeCost(UpgradeID);
-            gamedata.clickUpgradeLevel[UpgradeID] += 1;
+            case "click":
+                Buy(gamedata.clickUpgradeLevels);
+                break;
+            case "idle":
+                Buy(gamedata.productionUpgradeLevels);
+                break;
         }
 
-        UpdateClickUpgradeUI(UpgradeID);
+        void Buy(List<int> upgradeButtonList)
+        {
+            if (gamedata.uacCredits >= UpgradeCost(type, UpgradeID))
+            {
+                gamedata.uacCredits -= UpgradeCost(type, UpgradeID);
+                upgradeButtonList[UpgradeID] += 1;
+            }
+        }
+
+        UpdateUpgradeUI(type, UpgradeID);
     }
 }

@@ -8,9 +8,13 @@ using BreakInfinity;
 
 public class Utils : MonoBehaviour
 {
-    public static List<T> CreateList<T>(int capacity) => Enumerable.Repeat(default(T), capacity).ToList();
+    public static List<T> CreateList<T>(int capacity)
+    {
+        return Enumerable.Repeat(default(T), capacity).ToList();
+    }
 
-    public static void UpgradeCheck<T>(ref List<T> list, int length) where T : new()
+    // add an upgrade button to the list if it exists, otherwise make it
+    public static void UpgradeCheck<T>(List<T> list, int length) where T : new()
     {
         try
         {

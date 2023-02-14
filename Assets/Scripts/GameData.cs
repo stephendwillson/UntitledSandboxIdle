@@ -7,16 +7,21 @@ public class GameData
 {
     public BigDouble uacCredits;
 
-    public List<BigDouble> clickUpgradeLevel;
+    public List<int> clickUpgradeLevels;
+    public List<int> productionUpgradeLevels;
 
     // currently number of available weapons, 7...fist + chainsaw maybe coming later
-    public int numUpgrades = 7;
+    public int numClickUpgrades = 7;
+
+    // placeholder, no clue what I'm doing with production upgrades
+    public int numProductionUpgrades = 5;
 
     public GameData()
     {
-        uacCredits = 0;
+        uacCredits = 10000;
 
-        clickUpgradeLevel = Utils.CreateList<BigDouble>(numUpgrades);
+        clickUpgradeLevels = Utils.CreateList<int>(numClickUpgrades);
+        productionUpgradeLevels = Utils.CreateList<int>(numProductionUpgrades);
     }
 
 }

@@ -26,10 +26,12 @@ public class GameController : MonoBehaviour
 
     private void Update()
     {
-        uacCreditsTotalText.text = "UAC Credits:\n" + gamedata.uacCredits;
+        uacCreditsTotalText.text = "UAC Credits:\n" + gamedata.uacCredits.ToString("F0");
         clickButtonText.text = "Shoot\n(+" + ClickPower() + " UAC Credits)";
-        creditsPerSecondText.text = "Credits / s:\n" + CreditsPerSecond();
+        creditsPerSecondText.text = "Credits / s:\n" + CreditsPerSecond().ToString("F2");
         creditsPerClickText.text = "UAC Credits / Shot:\n+" + ClickPower();
+
+        gamedata.uacCredits += CreditsPerSecond() * Time.deltaTime;
     }
 
     public void ClickShoot()
@@ -39,16 +41,21 @@ public class GameController : MonoBehaviour
 
     public BigDouble ClickPower()
     {
-        BigDouble total = 1000;
+        BigDouble total = 1;
 
-        for (int i = 0; i < gamedata.clickUpgradeLevel.Count; i++)
-            total += UpgradesController.instance.clickUpgradesBasePower[i] * gamedata.clickUpgradeLevel[i];
+        for (int i = 0; i < gamedata.clickUpgradeLevels.Count; i++)
+            total += UpgradesController.instance.clickUpgradesBasePower[i] * gamedata.clickUpgradeLevels[i];
     
         return total;
     }
 
     public BigDouble CreditsPerSecond()
     {
-        return 8675309;
+        BigDouble total = 0;
+
+        for (int i = 0; i < gamedata.productionUpgradeLevels.Count; i++)
+            total += UpgradesController.instance.productionUpgradesBasePower[i] * gamedata.productionUpgradeLevels[i];
+    
+        return total;
     }
 }
