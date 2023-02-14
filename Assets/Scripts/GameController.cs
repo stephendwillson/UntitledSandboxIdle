@@ -13,6 +13,7 @@ public class GameController : MonoBehaviour
     [SerializeField] private TMP_Text uacCreditsTotalText;
     [SerializeField] private TMP_Text creditsPerClickText;
     [SerializeField] private TMP_Text clickButtonText;
+    [SerializeField] private TMP_Text creditsPerSecondText;
 
     public string[] nameString;
     
@@ -25,9 +26,10 @@ public class GameController : MonoBehaviour
 
     private void Update()
     {
-        uacCreditsTotalText.text = gamedata.uacCredits + " UAC Credits";
-        creditsPerClickText.text = "+" + ClickPower() + " UAC Credits / Shot";
+        uacCreditsTotalText.text = "UAC Credits:\n" + gamedata.uacCredits;
         clickButtonText.text = "Shoot\n(+" + ClickPower() + " UAC Credits)";
+        creditsPerSecondText.text = "Credits / s:\n" + CreditsPerSecond();
+        creditsPerClickText.text = "UAC Credits / Shot:\n+" + ClickPower();
     }
 
     public void ClickShoot()
@@ -37,11 +39,16 @@ public class GameController : MonoBehaviour
 
     public BigDouble ClickPower()
     {
-        BigDouble total = 1;
+        BigDouble total = 1000;
 
         for (int i = 0; i < gamedata.clickUpgradeLevel.Count; i++)
             total += UpgradesController.instance.clickUpgradesBasePower[i] * gamedata.clickUpgradeLevel[i];
     
         return total;
+    }
+
+    public BigDouble CreditsPerSecond()
+    {
+        return 8675309;
     }
 }

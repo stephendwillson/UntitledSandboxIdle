@@ -11,6 +11,7 @@ public class Upgrades : MonoBehaviour
     public TMP_Text NameText;
     public TMP_Text CostText;
     public TMP_Text LevelText;
+    public TMP_Text BasePowerText;
 
     public void BuyClickUpgrade() => UpgradesController.instance.BuyUpgrade(UpgradeID);
 }

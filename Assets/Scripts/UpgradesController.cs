@@ -26,32 +26,55 @@ public class UpgradesController : MonoBehaviour
 
     public void StartUpgradeController()
     {
+        Utils.UpgradeCheck(ref GameController.instance.gamedata.clickUpgradeLevel, 7);
+
         clickUpgradeNames = new[]
         {
+            // Rough idea is to use Fists + Chainsaw for temporary click/idle upgrades
+            // Maybe Berserker pack == stronger fists, something like that
+            // "Fists",
+            // "Chainsaw",
             "Pistol",
             "Shotgun",
-            "Super Shotgun"
+            "Super Shotgun",
+            "Chaingun",
+            "Rocket Launcher",
+            "Plasma Gun",
+            "BFG9000",
+
         };
 
         clickUpgradeBaseCost = new BigDouble[]
         {
             10,
             50,
-            100
+            100,
+            500,
+            1000,
+            2500,
+            10000,
         };
 
         clickUpgradeCostMult = new BigDouble[]
         {
             1.25,
             1.35,
-            1.55
+            1.45,
+            1.55,
+            1.65,
+            1.75,
+            1.85,
         };
 
         clickUpgradesBasePower = new BigDouble[]
         {
             1,
             5,
-            10
+            10,
+            25,
+            50,
+            100,
+            250,
         };
 
         for (int i = 0; i < GameController.instance.gamedata.clickUpgradeLevel.Count; i++)
@@ -78,8 +101,9 @@ public class UpgradesController : MonoBehaviour
 
         void UpdateUI(int ID)
         {
-            clickUpgrades[ID].LevelText.text = "Level: " + gamedata.clickUpgradeLevel[ID].ToString();
-            clickUpgrades[ID].CostText.text = $"Cost: {ClickUpgradeCost(ID):F2} Credits";
+            clickUpgrades[ID].LevelText.text = gamedata.clickUpgradeLevel[ID].ToString();
+            clickUpgrades[ID].CostText.text = $"-{ClickUpgradeCost(ID)} Credits";
+            clickUpgrades[ID].BasePowerText.text = $"+{clickUpgradesBasePower[ID]} / Shot";
             clickUpgrades[ID].NameText.text = clickUpgradeNames[ID];
         }
     }
@@ -104,6 +128,4 @@ public class UpgradesController : MonoBehaviour
 
         UpdateClickUpgradeUI(UpgradeID);
     }
-
-
 }
