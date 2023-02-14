@@ -28,7 +28,7 @@ public class GameController : MonoBehaviour
     {
         uacCreditsTotalText.text = "UAC Credits:\n" + gamedata.uacCredits.ToString("F0");
         clickButtonText.text = "Shoot\n(+" + ClickPower() + " UAC Credits)";
-        creditsPerSecondText.text = "Credits / s:\n" + CreditsPerSecond().ToString("F2");
+        creditsPerSecondText.text = "Credits / s:\n" + CreditsPerSecond().ToString("F0");
         creditsPerClickText.text = "UAC Credits / Shot:\n+" + ClickPower();
 
         gamedata.uacCredits += CreditsPerSecond() * Time.deltaTime;

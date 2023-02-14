@@ -18,7 +18,7 @@ public class GameData
 
     public GameData()
     {
-        uacCredits = 10000;
+        uacCredits = 0;
 
         clickUpgradeLevels = Utils.CreateList<int>(numClickUpgrades);
         productionUpgradeLevels = Utils.CreateList<int>(numProductionUpgrades);

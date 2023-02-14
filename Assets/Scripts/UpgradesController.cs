@@ -84,7 +84,7 @@ public class UpgradesController : MonoBehaviour
 
         clickUpgradesBasePower = new BigDouble[]
         {
-            10000,
+            1,
             5,
             10,
             25,
@@ -185,7 +185,7 @@ public class UpgradesController : MonoBehaviour
         void UpdateUI(List<Upgrades> upgrades, List<int> upgradeLevels, string[] upgradeNames, int ID)
         {
             upgrades[ID].LevelText.text = upgradeLevels[ID].ToString();
-            upgrades[ID].CostText.text = $"-{UpgradeCost(type, ID)} Credits";
+            upgrades[ID].CostText.text = "-" + UpgradeCost(type, ID).ToString("F0") + " Credits";
             upgrades[ID].NameText.text = upgradeNames[ID];
 
             switch (type)
@@ -194,7 +194,7 @@ public class UpgradesController : MonoBehaviour
                     upgrades[ID].BasePowerText.text = $"+{clickUpgradesBasePower[ID]} / Shot";
                     break;
                 case "idle":
-                    upgrades[ID].BasePowerText.text = $"+{productionUpgradesBasePower[ID]} / Shot";
+                    upgrades[ID].BasePowerText.text = $"+{productionUpgradesBasePower[ID]} / s";
                     break;
             }
         }
@@ -208,11 +208,18 @@ public class UpgradesController : MonoBehaviour
         switch (type)
         {
             case "click":
-                return clickUpgradeBaseCost[UpgradeID] * BigDouble.Pow(clickUpgradeCostMult[UpgradeID], gamedata.clickUpgradeLevels[UpgradeID]);
+                return clickUpgradeBaseCost[UpgradeID] 
+                       * BigDouble.Pow(
+                            clickUpgradeCostMult[UpgradeID], 
+                            (BigDouble)gamedata.clickUpgradeLevels[UpgradeID]
+                       );
 
             case "idle":
-                return productionUpgradeBaseCost[UpgradeID] * BigDouble.Pow(productionUpgradeCostMult[UpgradeID], gamedata.productionUpgradeLevels[UpgradeID]);
-
+                return productionUpgradeBaseCost[UpgradeID] 
+                       * BigDouble.Pow(
+                            productionUpgradeCostMult[UpgradeID],
+                            (BigDouble)gamedata.productionUpgradeLevels[UpgradeID]
+                        );
         }
         return -1;
     }
