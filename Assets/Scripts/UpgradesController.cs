@@ -184,7 +184,7 @@ public class UpgradesController : MonoBehaviour
 
         void UpdateUI(List<Upgrades> upgrades, List<int> upgradeLevels, string[] upgradeNames, int ID)
         {
-            upgrades[ID].LevelText.text = upgradeLevels[ID].ToString();
+            upgrades[ID].LevelText.text = "Tier: " + upgradeLevels[ID].ToString();
             upgrades[ID].CostText.text = "-" + UpgradeCost(type, ID).ToString("F0") + " Credits";
             upgrades[ID].NameText.text = upgradeNames[ID];
 
