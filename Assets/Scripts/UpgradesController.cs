@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 using BreakInfinity;
 
@@ -19,7 +20,6 @@ public class UpgradesController : MonoBehaviour
     public List<Upgrades> productionUpgrades;
     public Upgrades productionUpgradePrefab;
 
-    public ScrollRect productionUpgradesScroll;
     public Transform productionUpgradesPanel;
 
     public BigDouble[] productionUpgradeBaseCost;
@@ -32,18 +32,14 @@ public class UpgradesController : MonoBehaviour
     public List<Upgrades> clickUpgrades;
     public Upgrades clickUpgradePrefab;
 
-    public ScrollRect clickUpgradesScroll;
     public Transform clickUpgradesPanel;
 
     public BigDouble[] clickUpgradeBaseCost;
     public BigDouble[] clickUpgradesBasePower;
     public BigDouble[] clickUpgradeCostMult;
 
-   
-
     public void StartUpgradeController()
     {
-
         // pile of click upgrade init + control values
         Utils.UpgradeCheck(GameController.instance.gamedata.clickUpgradeLevels, 7);
 
@@ -93,16 +89,13 @@ public class UpgradesController : MonoBehaviour
             250,
         };
 
+        // generate click upgrade button list
         for (int i = 0; i < GameController.instance.gamedata.clickUpgradeLevels.Count; i++)
         {
             Upgrades upgrade = Instantiate(clickUpgradePrefab, clickUpgradesPanel);
             upgrade.UpgradeID = i;
             clickUpgrades.Add(upgrade);
         }
-
-        // slap the upgrades into the scroll rect starting from bottom left, not center
-        clickUpgradesScroll.normalizedPosition = new Vector2(0, 0);
-
 
         // bunch of idle production upgrade init + control values
         Utils.UpgradeCheck(GameController.instance.gamedata.productionUpgradeLevels, 5);
@@ -143,16 +136,13 @@ public class UpgradesController : MonoBehaviour
             500,
         };
 
+        // generate idle production upgrade button list
         for (int i = 0; i < GameController.instance.gamedata.productionUpgradeLevels.Count; i++)
         {
             Upgrades upgrade = Instantiate(productionUpgradePrefab, productionUpgradesPanel);
             upgrade.UpgradeID = i;
             productionUpgrades.Add(upgrade);
         }
-
-        // slap the upgrades into the scroll rect starting from bottom left, not center
-        productionUpgradesScroll.normalizedPosition = new Vector2(0, 0);
-
 
         UpdateUpgradeUI("click");
         UpdateUpgradeUI("idle");
@@ -179,8 +169,6 @@ public class UpgradesController : MonoBehaviour
                     UpdateUI(productionUpgrades, gamedata.productionUpgradeLevels, productionUpgradeNames, UpgradeID);
                 break;
         }
-
-
 
         void UpdateUI(List<Upgrades> upgrades, List<int> upgradeLevels, string[] upgradeNames, int ID)
         {
