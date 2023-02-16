@@ -23,20 +23,18 @@ public class Navigation : MonoBehaviour
         ClickUpgradesSelected.SetActive(false);
         ProductionUpgradesSelected.SetActive(false);
 
-        ClickUpgradesTitleText.color = doom_red;
+        ClickUpgradesTitleText.color = doom_red_unselected;
         ProductionUpgradesTitleText.color = doom_red_unselected;
 
         switch (location)
         {
             case "Click":
                 ClickUpgradesTitleText.color = doom_red;
-                ProductionUpgradesTitleText.color = doom_red_unselected;
                 UpgradesController.instance.clickUpgradesPanel.gameObject.SetActive(true);
                 ClickUpgradesSelected.SetActive(true);
                 break;
             case "Production":
                 ProductionUpgradesTitleText.color = doom_red;
-                ClickUpgradesTitleText.color = doom_red_unselected;
                 UpgradesController.instance.productionUpgradesPanel.gameObject.SetActive(true);
                 ProductionUpgradesSelected.SetActive(true);
                 break;
